@@ -1,4 +1,4 @@
-name: TriageForge
+name: MaintainerForge
 summary: Auditable maintainer automation for open source repositories
 description: Classifies issues, scores PR risk, and produces reviewable maintainer signals.
 author: Muhammad Ammar Fasya
@@ -10,9 +10,9 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install TriageForge
+    - name: Install MaintainerForge
       shell: bash
       run: pip install .
     - name: Print version
       shell: bash
-      run: python -c "import triageforge; print(triageforge.__version__)"
+      run: python -c "import maintainerforge; print(maintainerforge.__version__)"

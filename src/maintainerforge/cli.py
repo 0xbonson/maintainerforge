@@ -12,7 +12,7 @@ def _print_json(payload: dict[str, Any]) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(prog="triageforge")
+    parser = argparse.ArgumentParser(prog="maintainerforge")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     classify = subparsers.add_parser("classify-issue", help="Classify an issue title and body")

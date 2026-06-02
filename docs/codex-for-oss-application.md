@@ -2,15 +2,15 @@
 
 ## Role
 
-I am the primary maintainer of TriageForge. I created the repository, own the release process, review issues and pull requests, maintain CI, write documentation, and handle security policy updates.
+I am the primary maintainer of MaintainerForge. I created the repository, own the release process, review issues and pull requests, maintain CI, write documentation, and handle security policy updates.
 
 ## Why this repository qualifies
 
-TriageForge supports OSS maintainers with auditable triage, PR risk scoring, and release note automation. It targets a real ecosystem problem: small maintainers need safe, reviewable automation without giving agents uncontrolled write access. Early project, but built for broad reuse.
+MaintainerForge supports OSS maintainers with auditable triage, PR risk scoring, and release note automation. It targets a real ecosystem problem: small maintainers need safe, reviewable automation without giving agents uncontrolled write access. Early project, but built for broad reuse.
 
 ## Why Codex Security is needed
 
-TriageForge analyzes maintainer workflows, PR metadata, file paths, and security-sensitive changes. Codex Security would help validate threat models, catch unsafe automation patterns, review supply-chain risks, and propose patches before releases.
+MaintainerForge analyzes maintainer workflows, PR metadata, file paths, and security-sensitive changes. Codex Security would help validate threat models, catch unsafe automation patterns, review supply-chain risks, and propose patches before releases.
 
 ## API credit usage
 
