@@ -36,25 +36,25 @@ pytest
 Classify an issue:
 
 ```bash
-triageforge classify-issue --title "Bug: crash on startup" --body "The CLI exits with traceback"
+maintainerforge classify-issue --title "Bug: crash on startup" --body "The CLI exits with traceback"
 ```
 
 Score PR risk:
 
 ```bash
-triageforge score-pr --files src/auth.py pyproject.toml docs/usage.md
+maintainerforge score-pr --files src/auth.py pyproject.toml docs/usage.md
 ```
 
 Generate release notes:
 
 ```bash
-triageforge release-notes --commits "fix: handle empty token" "feat: add JSON output"
+maintainerforge release-notes --commits "fix: handle empty token" "feat: add JSON output"
 ```
 
 ## GitHub Action example
 
 ```yaml
-name: TriageForge
+name: MaintainerForge
 on:
   issues:
     types: [opened, edited]
@@ -66,7 +66,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: 0xbonson/maintainerforge@v0.1.0
+      - uses: 0xbonson/maintainerforge@v0.1.1
 ```
 
 ## OpenAI Codex usage plan

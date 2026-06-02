@@ -1,4 +1,4 @@
-from triageforge.core import classify_issue, generate_release_notes, score_pr
+from maintainerforge.core import classify_issue, generate_release_notes, score_pr
 
 
 def test_classify_bug_issue():

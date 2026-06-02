@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for helping improve TriageForge.
+Thanks for helping improve MaintainerForge.
 
 ## Development
 
