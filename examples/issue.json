@@ -1,0 +1,4 @@
+{
+  "title": "Bug: crash on startup",
+  "body": "The CLI exits with a traceback after install."
+}
