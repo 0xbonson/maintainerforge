@@ -22,3 +22,15 @@ def test_release_notes_sections():
     notes = generate_release_notes(["feat: add JSON output", "fix: handle empty issue body"])
     assert "## Features" in notes
     assert "## Fixes" in notes
+
+
+def test_generate_security_checklist_for_shell_and_ci_paths():
+    from maintainerforge.core import generate_security_checklist
+
+    result = generate_security_checklist(["install.sh", "pyproject.toml", ".github/workflows/ci.yml"])
+
+    assert result.risk_level == "high"
+    assert result.risk_score >= 70
+    assert "Review shell quoting and argument parsing." in result.checklist
+    assert "Verify CI permissions are minimal and read-only where possible." in result.checklist
+    assert "Review dependency changes for supply-chain risk." in result.checklist

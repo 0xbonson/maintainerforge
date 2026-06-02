@@ -4,7 +4,7 @@ import argparse
 import json
 from typing import Any
 
-from .core import classify_issue, generate_release_notes, score_pr
+from .core import classify_issue, generate_release_notes, generate_security_checklist, score_pr
 
 
 def _print_json(payload: dict[str, Any]) -> None:
@@ -22,6 +22,9 @@ def main() -> None:
     score = subparsers.add_parser("score-pr", help="Score pull request risk from changed files")
     score.add_argument("--files", nargs="+", required=True)
 
+    checklist = subparsers.add_parser("checklist", help="Generate a maintainer security checklist from changed files")
+    checklist.add_argument("--files", nargs="+", required=True)
+
     release = subparsers.add_parser("release-notes", help="Generate release notes from commits")
     release.add_argument("--commits", nargs="+", required=True)
 
@@ -33,6 +36,16 @@ def main() -> None:
     elif args.command == "score-pr":
         result = score_pr(args.files)
         _print_json({"score": result.score, "level": result.level, "reasons": result.reasons})
+    elif args.command == "checklist":
+        result = generate_security_checklist(args.files)
+        _print_json(
+            {
+                "risk_score": result.risk_score,
+                "risk_level": result.risk_level,
+                "checklist": result.checklist,
+                "reasons": result.reasons,
+            }
+        )
     elif args.command == "release-notes":
         print(generate_release_notes(args.commits), end="")
 

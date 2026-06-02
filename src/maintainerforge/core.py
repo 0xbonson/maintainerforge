@@ -18,6 +18,14 @@ class PullRequestRisk:
     reasons: list[str]
 
 
+@dataclass(frozen=True)
+class SecurityChecklist:
+    risk_score: int
+    risk_level: str
+    checklist: list[str]
+    reasons: list[str]
+
+
 BUG_TERMS = ("bug", "crash", "error", "traceback", "broken", "fail", "failure")
 SECURITY_TERMS = ("security", "vulnerability", "cve", "xss", "sql injection", "secret", "token leak")
 DOC_TERMS = ("docs", "documentation", "readme", "typo", "guide")
@@ -91,6 +99,72 @@ def score_pr(files: Iterable[str]) -> PullRequestRisk:
         reasons.append("no high-risk file patterns detected")
 
     return PullRequestRisk(score=score, level=level, reasons=reasons)
+
+
+def generate_security_checklist(files: Iterable[str]) -> SecurityChecklist:
+    file_list = list(files)
+    score = 0
+    checklist: list[str] = []
+    reasons: list[str] = []
+
+    def add_item(item: str) -> None:
+        if item not in checklist:
+            checklist.append(item)
+
+    for path in file_list:
+        lowered = path.lower()
+
+        if lowered.endswith(".sh") or lowered.startswith("scripts/") or "install" in lowered:
+            score += 30
+            reasons.append(f"shell or installer path changed: {path}")
+            add_item("Review shell quoting and argument parsing.")
+            add_item("Check for unsafe eval, command interpolation, or unquoted variables.")
+            add_item("Verify empty, spaced, and metacharacter-like inputs are tested.")
+
+        if lowered.startswith(".github/workflows/") or lowered in {"action.yml", "action.yaml"}:
+            score += 25
+            reasons.append(f"CI or GitHub Action path changed: {path}")
+            add_item("Verify CI permissions are minimal and read-only where possible.")
+            add_item("Check that pull_request workflows do not expose secrets to untrusted code.")
+
+        if lowered in {"pyproject.toml", "package.json", "package-lock.json", "requirements.txt", "uv.lock"}:
+            score += 20
+            reasons.append(f"dependency or build metadata changed: {path}")
+            add_item("Review dependency changes for supply-chain risk.")
+            add_item("Confirm build, packaging, and entry point changes are covered by tests.")
+
+        if any(term in lowered for term in ("auth", "token", "secret", "credential", "permission", "security", "crypto")):
+            score += 35
+            reasons.append(f"security-sensitive path changed: {path}")
+            add_item("Confirm secrets, tokens, and credentials are never logged.")
+            add_item("Review authorization, authentication, and permission boundaries.")
+
+        if lowered.startswith("docs/") or lowered.endswith(".md"):
+            score += 5
+
+    if len(file_list) > 10:
+        score += 15
+        reasons.append("large change set")
+        add_item("Review the change set in smaller logical groups before merging.")
+
+    if not checklist:
+        add_item("Perform standard maintainer review and confirm tests cover the changed behavior.")
+        reasons.append("no security-sensitive file patterns detected")
+
+    score = min(score, 100)
+    if score >= 70:
+        level = "high"
+    elif score >= 35:
+        level = "medium"
+    else:
+        level = "low"
+
+    return SecurityChecklist(
+        risk_score=score,
+        risk_level=level,
+        checklist=checklist,
+        reasons=reasons,
+    )
 
 
 def generate_release_notes(commits: Iterable[str]) -> str:
