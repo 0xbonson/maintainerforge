@@ -10,6 +10,7 @@ Open source maintainers spend a lot of time on repetitive work: issue triage, pu
 
 - Rule based issue classification from title and body
 - Pull request risk scoring from changed file paths
+- Security checklist generation for maintainer review workflows
 - Release note generation from commit messages
 - JSON output for GitHub Actions and CI workflows
 - Safe by default: no secrets required, no mutation unless explicitly wired by the maintainer
@@ -45,6 +46,26 @@ Score PR risk:
 maintainerforge score-pr --files src/auth.py pyproject.toml docs/usage.md
 ```
 
+Generate a security checklist:
+
+```bash
+maintainerforge checklist --files install.sh pyproject.toml .github/workflows/ci.yml
+```
+
+Example checklist output:
+
+```json
+{
+  "risk_level": "high",
+  "risk_score": 75,
+  "checklist": [
+    "Review shell quoting and argument parsing.",
+    "Verify CI permissions are minimal and read-only where possible.",
+    "Review dependency changes for supply-chain risk."
+  ]
+}
+```
+
 Generate release notes:
 
 ```bash
@@ -66,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: 0xbonson/maintainerforge@v0.1.1
+      - uses: 0xbonson/maintainerforge@v0.2.0
 ```
 
 ## OpenAI Codex usage plan
